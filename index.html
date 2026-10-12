@@ -91,6 +91,10 @@ footer{background:#031d3d;color:rgba(255,255,255,.6);font-size:13px;padding:28px
 footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 .wa{position:fixed;right:18px;bottom:18px;width:56px;height:56px;border-radius:50%;background:#25d366;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,.25);z-index:30}
 .wa svg{width:30px;height:30px;fill:#fff}
+.hero{position:relative}
+#fx{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+.hero .wrap{position:relative;z-index:1}
+.hero-card{transition:transform .25s ease-out;will-change:transform}
 </style>
 </head>
 <body>
@@ -104,7 +108,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 </header>
 
 <main id="top">
-<div class="hero">
+<div class="hero" id="hero">
+  <canvas id="fx" aria-hidden="true"></canvas>
   <div class="wrap">
     <div>
       <div class="tag">Medical Devices · Hyderabad, India</div>
@@ -204,5 +209,34 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
 <a class="wa" href="https://wa.me/919059006907" target="_blank" rel="noopener" aria-label="Chat on WhatsApp"><svg viewBox="0 0 32 32"><path d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3zm0 23.6c-2 0-4-.6-5.7-1.6l-.4-.2-3.9 1 1-3.8-.3-.4A10.6 10.6 0 1 1 16 26.6zm5.8-7.9c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2l-1 1.2c-.2.2-.4.2-.7.1a8.7 8.7 0 0 1-4.3-3.8c-.3-.6.3-.5 1-1.7.1-.2 0-.4 0-.5l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.1-1.2 2.8s1.2 3.2 1.4 3.5c.2.2 2.4 3.7 5.8 5.1 2.2.9 3 1 4.1.8.7-.1 1.9-.8 2.2-1.5.3-.7.3-1.4.2-1.5l-.6-.4z"/></svg></a>
 <script>document.getElementById('y').textContent=new Date().getFullYear()</script>
+<script>
+(()=>{
+const hero=document.getElementById('hero'),cv=document.getElementById('fx'),cx=cv.getContext('2d'),card=hero.querySelector('.hero-card');
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches, touch=matchMedia('(pointer: coarse)').matches;
+const COLS=['255,255,255','0,200,255','155,226,58'];
+let W,H,dpr,P=[],m={x:-9999,y:-9999,on:false},run=true,raf;
+function size(){dpr=Math.min(devicePixelRatio||1,2);W=hero.clientWidth;H=hero.clientHeight;cv.width=W*dpr;cv.height=H*dpr;cx.setTransform(dpr,0,0,dpr,0,0);
+ const n=Math.min(touch?45:110,Math.round(W*H/(touch?14000:9000)));
+ P=Array.from({length:n},()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35,r:Math.random()*1.8+1,c:COLS[Math.random()<.6?0:Math.random()<.5?1:2]}));}
+function frame(){cx.clearRect(0,0,W,H);const L=W<700?95:135;
+ for(const p of P){
+  if(m.on){const dx=p.x-m.x,dy=p.y-m.y,d=Math.hypot(dx,dy);if(d<150&&d>0){const f=(150-d)/150*.6;p.vx+=dx/d*f*.12;p.vy+=dy/d*f*.12;}}
+  p.vx*=.985;p.vy*=.985;const sp=Math.hypot(p.vx,p.vy);if(sp<.12){p.vx+=(Math.random()-.5)*.05;p.vy+=(Math.random()-.5)*.05;}
+  p.x+=p.vx;p.y+=p.vy;if(p.x<-10)p.x=W+10;if(p.x>W+10)p.x=-10;if(p.y<-10)p.y=H+10;if(p.y>H+10)p.y=-10;}
+ for(let i=0;i<P.length;i++){const a=P[i];
+  for(let j=i+1;j<P.length;j++){const b=P[j],d=Math.hypot(a.x-b.x,a.y-b.y);if(d<L){cx.strokeStyle=`rgba(${a.c},${(1-d/L)*.22})`;cx.lineWidth=1;cx.beginPath();cx.moveTo(a.x,a.y);cx.lineTo(b.x,b.y);cx.stroke();}}
+  if(m.on){const d=Math.hypot(a.x-m.x,a.y-m.y);if(d<200){cx.strokeStyle=`rgba(0,200,255,${(1-d/200)*.5})`;cx.beginPath();cx.moveTo(a.x,a.y);cx.lineTo(m.x,m.y);cx.stroke();}}}
+ for(const p of P){cx.fillStyle=`rgba(${p.c},.85)`;cx.beginPath();cx.arc(p.x,p.y,p.r,0,6.283);cx.fill();}
+ if(run&&!reduce)raf=requestAnimationFrame(frame);}
+size();frame();
+addEventListener('resize',()=>{size();if(reduce)frame();});
+if(!reduce){
+ if(!touch){hero.addEventListener('pointermove',e=>{const r=hero.getBoundingClientRect();m.x=e.clientX-r.left;m.y=e.clientY-r.top;m.on=true;
+   if(card&&W>860){const tx=(m.x/W-.5)*10,ty=(m.y/H-.5)*10;card.style.transform=`perspective(900px) rotateY(${tx}deg) rotateX(${-ty}deg)`;}});
+  hero.addEventListener('pointerleave',()=>{m.on=false;if(card)card.style.transform='';});}
+ new IntersectionObserver(([e])=>{run=e.isIntersecting;cancelAnimationFrame(raf);if(run)raf=requestAnimationFrame(frame);}).observe(hero);
+ document.addEventListener('visibilitychange',()=>{run=!document.hidden;cancelAnimationFrame(raf);if(run)raf=requestAnimationFrame(frame);});}
+})();
+</script>
 </body>
 </html>
