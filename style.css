@@ -74,6 +74,14 @@ a.citem:hover{background:rgba(255,255,255,.12)}
 @media(max-width:860px){.cgrid{grid-template-columns:1fr}}
 footer{background:#031d3d;color:rgba(255,255,255,.6);font-size:13px;padding:28px 0}
 footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+footer a{color:rgba(255,255,255,.85);text-decoration:underline;text-underline-offset:3px}
+footer a:hover{color:#fff}
+.phero.slim .wrap{grid-template-columns:1fr;padding-top:40px;padding-bottom:44px}
+.phero.slim p{margin-bottom:0}
+.legal{max-width:720px}
+.legal h2{font-size:22px;margin:32px 0 10px}
+.legal h2:first-child{margin-top:0}
+.legal a{color:var(--green);font-weight:600}
 .wa{position:fixed;right:18px;bottom:18px;width:56px;height:56px;border-radius:50%;background:#25d366;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,.25);z-index:30}
 .wa svg{width:30px;height:30px;fill:#fff}
 .hero{position:relative}
