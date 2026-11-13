@@ -14,5 +14,18 @@
   document.body.appendChild(b);
   const upd=()=>b.classList.toggle('show',scrollY>600);
   addEventListener('scroll',upd,{passive:true});upd();
-  b.addEventListener('click',()=>scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'}));
+  // Slow, eased scroll to top (~1.2s). The page's CSS smooth scrolling is paused while it runs,
+  // and any wheel/touch/key input from the visitor stops it straight away.
+  const html=document.documentElement,DUR=1200,ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+  let raf=0;
+  const stop=()=>{if(raf){cancelAnimationFrame(raf);raf=0;html.style.scrollBehavior='';}};
+  ['wheel','touchstart','keydown'].forEach(ev=>addEventListener(ev,stop,{passive:true}));
+  b.addEventListener('click',()=>{
+    stop();
+    if(matchMedia('(prefers-reduced-motion: reduce)').matches){html.style.scrollBehavior='auto';scrollTo(0,0);html.style.scrollBehavior='';return;}
+    const from=scrollY,t0=performance.now();
+    html.style.scrollBehavior='auto';
+    const step=now=>{const p=Math.min((now-t0)/DUR,1);scrollTo(0,Math.round(from*(1-ease(p))));if(p<1)raf=requestAnimationFrame(step);else{raf=0;html.style.scrollBehavior='';}};
+    raf=requestAnimationFrame(step);
+  });
 })();
