@@ -7,3 +7,12 @@
   document.addEventListener('keydown',e=>{if(e.key==='Escape')set(false);});
   addEventListener('resize',()=>{if(innerWidth>860)set(false);});
 })();
+(()=>{
+  const b=document.createElement('button');
+  b.type='button';b.className='totop';b.setAttribute('aria-label','Back to top');b.title='Back to top';
+  b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>';
+  document.body.appendChild(b);
+  const upd=()=>b.classList.toggle('show',scrollY>600);
+  addEventListener('scroll',upd,{passive:true});upd();
+  b.addEventListener('click',()=>scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'}));
+})();
