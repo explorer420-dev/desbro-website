@@ -69,6 +69,57 @@
     }catch(e){}
   });
 
+  // ---- Tag email subjects with the source ----
+  // Built by hand with encodeURIComponent (spaces -> %20): URLSearchParams would write "+",
+  // which some mail apps (Outlook, older iOS Mail) show literally.
+  document.querySelectorAll('a[href^="mailto:"]').forEach(a=>{
+    const h=a.getAttribute('href'),i=h.indexOf('?');
+    const addr=i<0?h:h.slice(0,i),rest=[];
+    let subj='';
+    if(i>=0)h.slice(i+1).split('&').forEach(kv=>{
+      if(!kv)return;
+      const j=kv.indexOf('='),k=j<0?kv:kv.slice(0,j),v=j<0?'':kv.slice(j+1);
+      let d=v;try{d=decodeURIComponent(v);}catch(e){}
+      if(k.toLowerCase()==='subject')subj=d;else rest.push(k+'='+encodeURIComponent(d));
+    });
+    if(/\(ref: /.test(subj))return;
+    subj=(subj||'Website enquiry')+tag;
+    a.setAttribute('href',addr+'?'+['subject='+encodeURIComponent(subj)].concat(rest).join('&'));
+  });
+
+  // ---- "Copy" button on the contact-section email cards ----
+  // The card is itself a mailto link and a button can't sit inside a link, so the card is
+  // wrapped and the button placed beside it (top-right corner, next to the "Email" label).
+  const EMAIL='info@desbrobiosciences.com';
+  const legacyCopy=t=>new Promise((ok,fail)=>{
+      const ta=document.createElement('textarea');
+      ta.value=t;ta.setAttribute('readonly','');ta.style.cssText='position:fixed;opacity:0';
+      document.body.appendChild(ta);ta.select();
+      try{document.execCommand('copy')?ok():fail();}catch(e){fail(e);}
+      ta.remove();
+    });
+  // Modern clipboard API first; if it's missing or refused, fall back to execCommand.
+  const copyText=t=>(navigator.clipboard&&window.isSecureContext)
+    ?navigator.clipboard.writeText(t).catch(()=>legacyCopy(t)):legacyCopy(t);
+  document.querySelectorAll('a.citem[href^="mailto:"]').forEach(a=>{
+    const w=document.createElement('div');
+    w.className='citem-wrap';
+    a.parentNode.insertBefore(w,a);w.appendChild(a);
+    const b=document.createElement('button');
+    b.type='button';b.className='copy-btn';b.textContent='Copy';
+    b.setAttribute('aria-label','Copy email address '+EMAIL);
+    let timer;
+    b.addEventListener('click',()=>{
+      copyText(EMAIL).then(()=>{
+        b.textContent='Copied';b.classList.add('done');
+        clearTimeout(timer);
+        timer=setTimeout(()=>{b.textContent='Copy';b.classList.remove('done');},2000);
+      }).catch(()=>{});
+      gtag('event','email_copy',{lead_source:src,page_type:page});
+    });
+    w.appendChild(b);
+  });
+
   // ---- Contact-click events ----
   document.addEventListener('click',e=>{
     const a=e.target.closest&&e.target.closest('a[href]');

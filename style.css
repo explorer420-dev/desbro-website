@@ -71,6 +71,9 @@ a.citem:hover{background:rgba(255,255,255,.12)}
 .citem small{display:block;font-size:12px;letter-spacing:1.2px;text-transform:uppercase;color:#9be23a;font-weight:700;margin-bottom:8px}
 .citem b{font-size:17px;font-weight:600;word-break:break-word}
 .citem p{font-size:15px;color:rgba(255,255,255,.85)}
+.citem-wrap{position:relative;display:grid}.citem-wrap>.citem{height:100%}
+.copy-btn{position:absolute;top:18px;right:18px;font:600 12px/1 Inter,system-ui,sans-serif;letter-spacing:.4px;color:#fff;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:7px 12px;cursor:pointer;transition:.2s}
+.copy-btn:hover{background:rgba(255,255,255,.2)}.copy-btn:focus-visible{outline:2px solid #9be23a;outline-offset:2px}.copy-btn.done{background:#5fb800;border-color:#5fb800}
 @media(max-width:860px){.cgrid{grid-template-columns:1fr}}
 footer{background:#031d3d;color:rgba(255,255,255,.6);font-size:13px;padding:28px 0}
 footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
