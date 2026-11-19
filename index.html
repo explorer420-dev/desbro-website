@@ -35,7 +35,9 @@ window.SITE = {
   certifications: [
     // Cards with a PDF show "View certificate", which opens a preview on the page (images in certs/preview/).
     { name: "ISO 13485:2016", detail: "Medical devices quality management system. Certified by Zenith Quality Assessors, accredited by NABCB (IAF member). Scope: design and development, manufacture and sales of sterile, non-active, non-implantable medical devices for wound care: skin stapler. Valid until 26 Mar 2028.", number: "MD-QMS/91/R/N/2936", pdf: "certs/iso-13485-certificate.pdf", preview: ["certs/preview/iso-1.webp"] },
-    { name: "Medical Device Manufacturing Licence", detail: "Form MD-5, issued 27 Mar 2025 by the Drugs Control Administration, Government of Telangana, under the Medical Devices Rules, 2017. Covers our Class B skin staplers. Endorsement No. 1 (9 Apr 2025) covers our Class A non-sterile staple removers.", number: "MFG/MD/2025/000200", pdf: "certs/md5-manufacturing-licence.pdf", preview: ["certs/preview/md5-1.webp","certs/preview/md5-2.webp"] }
+    { name: "Medical Device Manufacturing Licence", detail: "Form MD-5, issued 27 Mar 2025 by the Drugs Control Administration, Government of Telangana, under the Medical Devices Rules, 2017. Covers our Class B skin staplers.", number: "MFG/MD/2025/000200", pdf: "certs/md5-manufacturing-licence.pdf", preview: ["certs/preview/md5-1.webp","certs/preview/md5-2.webp"] },
+    { name: "Licence Endorsement: Staple Remover", detail: "Form MD-5 Endorsement No. 1, issued 9 Apr 2025 by the Drugs Control Administration, Government of Telangana. Adds our Class A non-sterile staple removers to our manufacturing licence.", number: "MFG/MD/2025/000200 · Endorsement No. 1", pdf: "certs/md5-endorsement-1-remover.pdf", preview: ["certs/preview/md5-endorsement-1.webp"] },
+    { name: "Free Sale Certificate", detail: "Issued 1 Oct 2025 by the Drugs Control Administration, Government of Telangana. Confirms that our SMART STAPLER™ skin stapler (Class B) and our staple remover (Class A) may be sold in India and exported. Valid until 27 Mar 2030.", number: "FSC/MD/2025/000685", pdf: "certs/free-sale-certificate.pdf", preview: ["certs/preview/fsc-1.webp"] }
   ],
   // Shown as a single text strip under the certificate cards.
   trademark: { text: "The DBS logo is a registered trademark of Desbro Biosciences Private Limited, Class 10 (medical devices).", number: "5705567" },
@@ -119,7 +121,7 @@ window.SITE = {
   <div class="wrap">
     <div class="eyebrow">Quality &amp; compliance</div>
     <h2>Licensed and certified</h2>
-    <p class="lead">Our products are made in our own state-licensed facility in Hyderabad, and our quality management system is certified to ISO 13485:2016.</p>
+    <p class="lead">Our products are made in our own state-licensed facility in Hyderabad. Our quality management system is certified to ISO 13485:2016, and both products hold a Free Sale Certificate for sale in India and export.</p>
     <div class="certs" id="certs"></div>
     <div id="factory" class="factory" hidden>
       <h3 class="sub">Inside our facility</h3>
